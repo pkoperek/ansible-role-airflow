@@ -22,6 +22,10 @@
   # http://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html
   tasks:
 
+    # https://docs.ansible.com/ansible/latest/modules/include_vars_module.html
+    - include_vars:
+        file: "defaults/main.yml"
+
     # https://docs.ansible.com/ansible/latest/import_tasks_module.html
     - import_tasks:
         "tasks/main.yml"
