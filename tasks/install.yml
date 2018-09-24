@@ -43,3 +43,50 @@
     group: "{{ airflow_group }}"
   become:
     true
+
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+- name:
+    "apt : update"
+  apt:
+    update_cache: yes
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+- name:
+    "apt : ensure python tools present"
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - python3
+    - python3-pip
+  become:
+    true
+
+# AIRFLOW_GPL_UNIDECODE=yes is necessary starting with airflow 1.10.0
+# https://github.com/apache/incubator-airflow/blob/748ad939f1eef2060f3ad1c689812bb14ca944f6/UPDATING.md
+#
+# https://docs.ansible.com/ansible/latest/modules/pip_module.html
+- name:
+    "pip : ensure airflow present"
+  pip:
+    executable: "pip3"
+    name: "apache-airflow"
+    version: "{{ airflow_version }}"
+  environment:
+    AIRFLOW_GPL_UNIDECODE: "yes"
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/pip_module.html
+- name:
+    "pip : ensure extras present"
+  pip:
+    executable: "pip3"
+    name: "{{ item }}"
+    version: "{{ airflow_version }}"
+  with_items:
+    "{{ airflow_extra_packages }}"
+  become:
+    true

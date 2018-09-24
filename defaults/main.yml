@@ -18,3 +18,8 @@
 airflow_group: "airflow"
 airflow_home: "/etc/airflow"
 airflow_user: "airflow"
+airflow_version: "1.10.0"
+airflow_extra_packages:
+  - "apache-airflow[crypto]"
+  - "apache-airflow[password]"
+  - "apache-airflow[s3]"
