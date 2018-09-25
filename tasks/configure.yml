@@ -1,0 +1,56 @@
+# Copyright (c) 2018-present eyeo GmbH
+#
+# This module is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+---
+
+# https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+- name:
+    "lineinfile : ensure everyone uses main configuration"
+  lineinfile:
+    path: "/etc/environment"
+    line: "AIRFLOW_HOME={{ airflow_home_dir }}"
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/ini_file_module.html
+- name:
+    "ini_file : ensure configuration parameters present"
+  ini_file:
+    owner: "{{ airflow_user }}"
+    path: "{{ airflow_home_dir }}/airflow.cfg"
+    section: "{{ item.value['section'] | default('core') }}"
+    state: "{{ item.value['state'] | default('present') }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value['value'] | default(omit) }}"
+  with_dict:
+    "{{ airflow_configuration }}"
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/command_module.html
+- name:
+    "command : initialize airflow database"
+  command:
+    "{{ airflow_executable }} initdb"
+  register:
+    "airflow_initdb_output"
+  changed_when:
+    "'Running upgrade' in airflow_initdb_output.stdout"
+  environment:
+    AIRFLOW_HOME: "{{ airflow_home_dir }}"
+  become:
+    true
+  become_user:
+    "{{ airflow_user }}"

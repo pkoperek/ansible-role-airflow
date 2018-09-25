@@ -15,11 +15,157 @@
 
 ---
 
-airflow_group: "airflow"
-airflow_home: "/etc/airflow"
-airflow_user: "airflow"
-airflow_version: "1.10.0"
+# Location of the `airflow` executable introduced by installing an Airflow
+# package.
+airflow_executable: "/usr/local/bin/airflow"
+
+# Extra Airflow python packages to install.
 airflow_extra_packages:
   - "apache-airflow[crypto]"
   - "apache-airflow[password]"
-  - "apache-airflow[s3]"
+
+# User group which Airflow will execute under.
+airflow_group: "airflow"
+
+# User under which Airflow operates.
+airflow_user: "airflow"
+
+# Version of package to install.
+airflow_version: "1.10.0"
+
+# Directory where DAGs are stored
+airflow_dags_dir: "/usr/local/src/airflow/dags"
+
+# Directory where the main configuration files live.
+airflow_home_dir: "/etc/airflow"
+
+# Directory for log storage.
+airflow_logs_dir: "/var/log/airflow"
+
+# Location of Airflow plugins.
+airflow_plugins_dir: "/usr/local/src/airflow/plugins"
+
+# Dictionary of configuration options set in `airflow.cfg`
+airflow_configuration:
+
+  # [core]
+
+  # Airflow configuration directory
+  airflow_home:
+    value: "{{ airflow_home_dir }}"
+  # Directory in which DAGs are read from.
+  dags_folder:
+    value: "{{ airflow_dags_dir }}"
+  # The folder where airflow should store its log files
+  # This path must be absolute
+  base_log_folder:
+    value: "{{ airflow_logs_dir }}"
+  # The executor class that airflow should use. Choices include 
+  # `SequentialExecutor`, `LocalExecutor`, `CeleryExecutor`, `DaskExecutor`.
+  executor:
+    value: "SequentialExecutor"
+  # The SQL Alchemy url used to connect to Airflow's internal database.
+  # See: https://www.sqlalchemy.org/
+  sql_alchemy_conn:
+    value: "sqlite:///{{ airflow_home_dir }}/airflow.db"
+  # Defines the max number of task instances that should run simultaneously.
+  parallelism:
+    value: "32"
+  # The number of task instances allowed to run concurrently by the scheduler.
+  dag_concurrency:
+    value: "16"
+  # Are DAGs paused by default at creation.
+  dags_are_paused_at_creation:
+    value: "True"
+  # The maximum number of active DAG runs per DAG.
+  max_active_runs_per_dag:
+    value: "16"
+  # Whether to load the examples that ship with Airflow. It's good to
+  # get started, but you probably want to set this to False in a production
+  # environment
+  load_examples: # we want this always
+    value: "False"
+  # Location of Airflow plugins.
+  plugins_folder:
+    value: "{{ airflow_plugins_dir }}"
+  # This is a default development value - please change it!
+  fernet_key:
+    value: "O8bUUAJGHGXXItwgd6ghtt8CLgcGESYAzz3UuegR2i8="
+  # If set, tasks without a `run_as_user` argument will be run with this user.
+  default_impersonation:
+    value: "airflow"
+  # Disables _not secure_ features (e.g. AdHoc charts);
+  # Features enabled by this setting:
+  # https://github.com/apache/incubator-airflow/blob/4dd4c8280629927d645576daeee1253ecff69ff6/airflow/www/app.py#L86
+  secure_mode:
+    value: "False"
+  # Turn unit test mode on (overwrites many configuration options with test
+  # values at runtime)
+  unit_test_mode:
+    value: "False"
+
+  # [webserver]
+
+  # The base url of your website as airflow cannot guess what domain or
+  # cname is used.
+  base_url:
+    value: "http://localhost:8080"
+    section: "webserver"
+  # The ip specified when starting the web server
+  web_server_host:
+    value: "0.0.0.0"
+    section: "webserver"
+  # The port on which to run the web server
+  web_server_port:
+    value: "8080"
+    section: "webserver"
+  # Log files for the gunicorn webserver. '-' means log to stderr
+  access_logfile:
+    value: "{{ airflow_logs_dir }}/gunicorn-access.log"
+    section: "webserver"
+  error_logfile:
+    value: "{{ airflow_logs_dir }}/gunicorn-error.log"
+    section: "webserver"
+  # Expose the configuration file in the web server
+  expose_config:
+    value: "False"
+    section: "webserver"
+  # Set to true to turn on authentication:
+  # https://airflow.incubator.apache.org/security.html#web-authentication
+  authenticate:
+    value: "False"
+    section: "webserver"
+  # Filter the list of dags by owner name (requires authentication to be
+  # enabled)
+  filter_by_owner:
+    value: "False"
+    section: "webserver"
+  # Puts the webserver in demonstration mode; blurs the names of Operators for
+  # privacy.
+  demo_mode:
+    value: "False" # we always want this
+    section: "webserver"
+  # By default, the webserver shows paused DAGs. Flip this to hide paused
+  # DAGs by default
+  hide_paused_dags_by_default:
+    value: "False"
+    section: "webserver"
+
+  # [scheduler]
+
+  # How often airflow reads through DAG directory in search for DAG updates.
+  dag_dir_list_interval:
+    value: "300"
+    section: "scheduler"
+  # Directory for logs coming from children processes actually performing task
+  # execution.
+  child_process_log_directory:
+    value: "{{ airflow_logs_dir }}/scheduler"
+    section: "scheduler"
+
+  # [admin]
+
+  # UI to hide sensitive variable fields when set to True
+  hide_sensitive_variable_fields:
+    value: "True"
+    section: "admin"

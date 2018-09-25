@@ -33,14 +33,19 @@
   become:
     true
 
-# https://docs.ansible.com/ansible/latest/modules/user_module.html
+# https://docs.ansible.com/ansible/latest/modules/file_module.html
 - name:
-    "file : create airflow user home directory"
+    "file : ensure airflow directories exist"
   file:
-    path: "{{ airflow_home }}"
+    path: "{{ item }}"
     state: "directory"
     owner: "{{ airflow_user }}"
     group: "{{ airflow_group }}"
+  with_items:
+    - "{{ airflow_dags_dir }}"
+    - "{{ airflow_home_dir }}"
+    - "{{ airflow_logs_dir }}"
+    - "{{ airflow_plugins_dir }}"
   become:
     true
 
@@ -61,6 +66,16 @@
   with_items:
     - python3
     - python3-pip
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/apt_module.html
+- name:
+    "apt : ensure POSIX.1e acl support installed"
+  apt:
+    # https://docs.ansible.com/ansible/latest/user_guide/become.html#becoming-an-unprivileged-user
+    pkg: "acl"
+    state: "present"
   become:
     true
 

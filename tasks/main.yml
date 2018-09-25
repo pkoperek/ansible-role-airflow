@@ -20,3 +20,9 @@
     "include_tasks : ensure airflow and dependencies present"
   include_tasks:
     "install.yml"
+
+# https://docs.ansible.com/ansible/latest/modules/include_tasks_module.html
+- name:
+    "include_tasks : ensure configuration present"
+  include_tasks:
+    "configure.yml"
