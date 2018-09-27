@@ -16,24 +16,30 @@
 ---
 
 # https://docs.ansible.com/ansible/latest/modules/group_module.html
-- name: "group : ensure airflow group exists"
+- name:
+    "group : ensure airflow group exists"
   group:
     name: "{{ airflow_group }}"
-  become: true
+  become:
+    true
 
 # https://docs.ansible.com/ansible/latest/modules/user_module.html
-- name: "user : ensure airflow user exists"
+- name:
+    "user : ensure airflow user exists"
   user:
     name: "{{ airflow_user }}"
     group: "{{ airflow_group }}"
     shell: "/bin/bash"
-  become: true
+  become:
+    true
 
 # https://docs.ansible.com/ansible/latest/modules/user_module.html
-- name: "file : create airflow user home directory"
+- name:
+    "file : create airflow user home directory"
   file:
     path: "{{ airflow_home }}"
     state: directory
     owner: "{{ airflow_user }}"
     group: "{{ airflow_group }}"
-  become: true
+  become:
+    true
