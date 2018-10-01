@@ -75,3 +75,13 @@
     true
   become_user:
     "{{ airflow_user }}"
+
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+- name:
+    "template : ensure logrotate configuration present"
+  template:
+    src: "webserver-logrotate.j2"
+    dest: "/etc/logrotate.d/airflow"
+    mode: 0644
+  become:
+    true
