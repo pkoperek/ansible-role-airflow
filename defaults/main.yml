@@ -198,3 +198,18 @@ airflow_configuration_defaults:
   hide_sensitive_variable_fields:
     value: "True"
     section: "admin"
+
+  # smtp
+
+  # Hostname of the SMTP server
+  smtp_host:
+    value: "localhost"
+    section: "smtp"
+  # Toggle using starttls in communication with SMTP server
+  smtp_starttls:
+    value: "False"
+    section: "smtp"
+  # Email address which shows as the sender of the emails
+  smtp_mail_from:
+    value: "airflow@example.com"
+    section: "smtp"
