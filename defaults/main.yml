@@ -61,6 +61,11 @@ airflow_systemd_lib_dir: "/lib/systemd/system"
 # Directory where the tmpfiles configuration should be put to
 airflow_systemd_tmpfiles_dir: "/etc/tmpfiles.d"
 
+# Admin user
+airflow_admin_username: admin
+airflow_admin_email: admin@example.com
+airflow_admin_password: changeme
+
 # Systemd services to configure
 airflow_services:
   scheduler:
@@ -159,10 +164,13 @@ airflow_configuration_defaults:
   expose_config:
     value: "False"
     section: "webserver"
-  # Set to true to turn on authentication:
+  # Set to true to turn on password authentication:
   # https://airflow.incubator.apache.org/security.html#web-authentication
   authenticate:
-    value: "False"
+    value: "True"
+    section: "webserver"
+  auth_backend:
+    value: "airflow.contrib.auth.backends.password_auth"
     section: "webserver"
   # Filter the list of dags by owner name (requires authentication to be
   # enabled)

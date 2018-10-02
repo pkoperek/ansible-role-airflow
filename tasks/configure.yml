@@ -56,3 +56,22 @@
     true
   become_user:
     "{{ airflow_user }}"
+
+# https://docs.ansible.com/ansible/latest/modules/script_module.html
+- name:
+    "script : ensure adminitrator user present"
+  script: >
+    "create_user_if_not_exists.py"
+    "{{ airflow_admin_username }}"
+    "{{ airflow_admin_email }}"
+    "{{ airflow_admin_password }}"
+  environment:
+    AIRFLOW_HOME: "{{ airflow_home_dir }}"
+  register:
+    "create_user_output"
+  changed_when:
+    "'user created' in create_user_output.stdout"
+  become:
+    true
+  become_user:
+    "{{ airflow_user }}"
