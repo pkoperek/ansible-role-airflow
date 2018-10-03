@@ -15,24 +15,15 @@
 
 ---
 
-# https://docs.ansible.com/ansible/latest/user_guide/playbooks.html
-- hosts:
-    all
-
-  # http://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html
-  tasks:
-
-    # https://docs.ansible.com/ansible/latest/modules/include_vars_module.html
-    - include_vars:
-        file: "defaults/main.yml"
-
-    # https://docs.ansible.com/ansible/latest/import_tasks_module.html
-    - import_tasks:
-        "tasks/main.yml"
-
-  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html
-  handlers:
-
-    # https://docs.ansible.com/ansible/latest/include_tasks_module.html
-    - import_tasks:
-        "handlers/main.yml"
+# https://docs.ansible.com/ansible/latest/modules/service_module.html
+- name:
+    "service : restart"
+  service:
+    state: "restarted"
+    name: "airflow-{{ item.key }}"
+  when:
+    "item.value.state | default('started') != 'stopped'"
+  with_dict:
+    "{{ airflow_services }}"
+  become:
+    true

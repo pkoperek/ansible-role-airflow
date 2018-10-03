@@ -105,3 +105,5 @@
     "{{ airflow_extra_packages }}"
   become:
     true
+  notify:
+    - "service : restart"
