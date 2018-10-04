@@ -46,7 +46,10 @@ airflow_logs_dir: "/var/log/airflow"
 airflow_plugins_dir: "/usr/local/src/airflow/plugins"
 
 # Dictionary of configuration options set in `airflow.cfg`
-airflow_configuration:
+# Role user should set own parameters in `airflow_configuration` dictionary
+airflow_configuration: {}
+
+airflow_configuration_defaults:
 
   # [core]
 

@@ -35,7 +35,7 @@
     option: "{{ item.key }}"
     value: "{{ item.value['value'] | default(omit) }}"
   with_dict:
-    "{{ airflow_configuration }}"
+    "{{ airflow_configuration_defaults | combine(airflow_configuration) }}"
   become:
     true
 
