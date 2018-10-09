@@ -26,6 +26,8 @@ Type=simple
 ExecStart={{ airflow_executable }} {{ airflow_component_name }} --pid {{ airflow_pid_dir }}/{{ airflow_component_name }}.pid
 Restart=always
 RestartSec=5s
+# https://www.freedesktop.org/software/systemd/man/systemd.exec.html
+PrivateTmp={{ airflow_component_privatetmp }}
 
 [Install]
 WantedBy=multi-user.target

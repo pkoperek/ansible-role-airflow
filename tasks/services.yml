@@ -66,6 +66,8 @@
     "template : ensure service definitions present"
   vars:
     airflow_component_name: "{{ item.key }}"
+    airflow_component_privatetmp:
+      "{{ item.value['privatetmp'] | default(false) | string | lower }}"
   template:
     src: "systemd-service.j2"
     dest: "{{ airflow_systemd_lib_dir }}/airflow-{{ item.key }}.service"

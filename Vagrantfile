@@ -33,6 +33,9 @@ Vagrant.configure(2) do |vagrant|
     # https://www.vagrantup.com/docs/vagrantfile/machine_settings.html
     config.vm.hostname = 'example.com'
 
+    # https://www.vagrantup.com/docs/networking/forwarded_ports.html
+    config.vm.network "forwarded_port", guest: 8080, host: 8080
+
     # https://www.vagrantup.com/docs/provisioning/ansible.html
     config.vm.provision('ansible') do |ansible|
       ansible.verbose = 'v'

@@ -66,6 +66,10 @@ airflow_services:
   scheduler:
     enabled: yes
     state: "started"
+  webserver:
+    enabled: yes
+    state: "started"
+    privatetmp: true
 
 # Dictionary of configuration options set in `airflow.cfg`
 # Role user should set own parameters in `airflow_configuration` dictionary
