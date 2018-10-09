@@ -15,6 +15,7 @@
 
 ---
 
+# General
 # Location of the `airflow` executable introduced by installing an Airflow
 # package.
 airflow_executable: "/usr/local/bin/airflow"
@@ -44,6 +45,27 @@ airflow_logs_dir: "/var/log/airflow"
 
 # Location of Airflow plugins.
 airflow_plugins_dir: "/usr/local/src/airflow/plugins"
+
+# Systemd
+
+# Directory for the PID file
+airflow_pid_dir: "/run/airflow"
+
+# Directory where the environment configuration for SystemD processes should be
+# stored
+airflow_systemd_environment_dir: "/etc/sysconfig"
+
+# Directory where SystemD services definitions should be stored
+airflow_systemd_lib_dir: "/lib/systemd/system"
+
+# Directory where the tmpfiles configuration should be put to
+airflow_systemd_tmpfiles_dir: "/etc/tmpfiles.d"
+
+# Systemd services to configure
+airflow_services:
+  scheduler:
+    enabled: yes
+    state: "started"
 
 # Dictionary of configuration options set in `airflow.cfg`
 # Role user should set own parameters in `airflow_configuration` dictionary

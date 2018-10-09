@@ -13,22 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
----
+[Unit]
+Description=Airflow {{ airflow_component_name }} daemon
+After=network.target postgresql.service
+Wants=postgresql.service
 
-# https://docs.ansible.com/ansible/latest/modules/include_tasks_module.html
-- name:
-    "include_tasks : ensure airflow and dependencies present"
-  include_tasks:
-    "install.yml"
+[Service]
+EnvironmentFile={{ airflow_systemd_environment_dir }}/airflow
+User={{ airflow_user }}
+Group={{ airflow_group }}
+Type=simple
+ExecStart={{ airflow_executable }} {{ airflow_component_name }} --pid {{ airflow_pid_dir }}/{{ airflow_component_name }}.pid
+Restart=always
+RestartSec=5s
 
-# https://docs.ansible.com/ansible/latest/modules/include_tasks_module.html
-- name:
-    "include_tasks : ensure configuration present"
-  include_tasks:
-    "configure.yml"
-
-# https://docs.ansible.com/ansible/latest/modules/include_tasks_module.html
-- name:
-    "include_tasks : ensure airflow systemd services"
-  include_tasks:
-    "services.yml"
+[Install]
+WantedBy=multi-user.target

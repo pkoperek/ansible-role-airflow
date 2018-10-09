@@ -1,0 +1,96 @@
+# Copyright (c) 2018-present eyeo GmbH
+#
+# This module is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+---
+
+# https://docs.ansible.com/ansible/latest/modules/file_module.html
+- name:
+    "file : ensure airflow pid directory exists"
+  file:
+    path: "{{ airflow_pid_dir }}"
+    state: "directory"
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/file_module.html
+- name:
+    "file : ensure systemd environment directory exists"
+  file:
+    path: "{{ airflow_systemd_environment_dir }}"
+    state: "directory"
+    owner: "root"
+    group: "root"
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+- name:
+    "template : ensure systemd tmpfiles configuration present"
+  template:
+    src: "systemd-conf.j2"
+    dest: "{{ airflow_systemd_tmpfiles_dir }}/airflow.conf"
+    mode: 0644
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+- name:
+    "template : ensure systemd environment file present"
+  template:
+    src: "systemd-env.j2"
+    dest: "{{ airflow_systemd_environment_dir }}/airflow"
+    mode: 0644
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+- name:
+    "template : ensure service definitions present"
+  vars:
+    airflow_component_name: "{{ item.key }}"
+  template:
+    src: "systemd-service.j2"
+    dest: "{{ airflow_systemd_lib_dir }}/airflow-{{ item.key }}.service"
+    mode: 0644
+    owner: "root"
+    group: "root"
+  with_dict:
+    "{{ airflow_services }}"
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/systemd_module.html
+- name:
+    "systemd : daemon reload"
+  systemd:
+    daemon_reload: "yes"
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/service_module.html
+- service:
+    name: "airflow-{{ item.key }}"
+    state: "{{ item.value.state | default(started) }}"
+    enabled: "{{ item.value.enabled | default(yes) }}"
+  with_dict:
+    "{{ airflow_services }}"
+  become:
+    true
