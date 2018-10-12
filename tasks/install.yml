@@ -43,6 +43,7 @@
     group: "{{ airflow_group }}"
   with_items:
     - "{{ airflow_dags_dir }}"
+    - "{{ airflow_example_dags_dir }}"
     - "{{ airflow_home_dir }}"
     - "{{ airflow_logs_dir }}"
     - "{{ airflow_plugins_dir }}"
@@ -76,6 +77,18 @@
     # https://docs.ansible.com/ansible/latest/user_guide/become.html#becoming-an-unprivileged-user
     pkg: "acl"
     state: "present"
+  become:
+    true
+
+# https://docs.ansible.com/ansible/latest/modules/template_module.html
+- name:
+    "template : ensure DAG example present"
+  template:
+    src: "example_dag.py.j2"
+    dest: "{{ airflow_example_dags_dir }}/example_dag.py"
+    mode: 0644
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
   become:
     true
 

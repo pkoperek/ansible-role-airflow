@@ -37,6 +37,9 @@ airflow_version: "1.10.0"
 # Directory where DAGs are stored
 airflow_dags_dir: "/usr/local/src/airflow/dags"
 
+# Directory where example DAGs are stored
+airflow_example_dags_dir: "{{ airflow_dags_dir }}/examples"
+
 # Directory where the main configuration files live.
 airflow_home_dir: "/etc/airflow"
 
